@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "186534480704",
+    "project_id": "ruberoo-9220d",
+    "storage_bucket": "ruberoo-9220d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186534480704:android:192f2e4ec2ad59df6808a5",
+        "android_client_info": {
+          "package_name": "com.rUberoo.fluttermyuber"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186534480704-ppm5p2gkl5qmtqctidkd10qeal571m7u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClrksG0imgZ6olcuMU0s74lExbrAjn7DA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186534480704-ppm5p2gkl5qmtqctidkd10qeal571m7u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
