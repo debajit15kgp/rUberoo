@@ -39,6 +39,9 @@ dependencies:
   flutter_polyline_points: ^0.2.6
   font_awesome_flutter: ^9.0.0
   animated_text_kit: ^4.1.1
+  slide_to_act: ^2.0.1
+  flutter_google_places: ^0.2.8
+  location: ^4.1.1
 
 
 

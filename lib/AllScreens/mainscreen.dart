@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:slide_to_act/slide_to_act.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -18,6 +18,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
+import 'exploreScreen.dart';
 
 class MainScreen extends StatefulWidget {
 
@@ -298,7 +300,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
           Positioned(
               left: 0.0,
               right: 0.0,
-              bottom: 0.0,
+              bottom: 10.0,
               child: AnimatedSize(
                 vsync: this,
                 curve: Curves.bounceIn,
@@ -319,14 +321,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                   ),
 
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 18.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 6.0),
                         Text("Hi there, ", style: TextStyle(fontSize: 10.0),),
                         Text("Where to?, ", style: TextStyle(fontSize: 20.0, fontFamily: "Brand-Bold"),),
-                        SizedBox(height: 20.0),
+                        SizedBox(height: 10.0),
                         GestureDetector(
                           onTap: () async
                           {
@@ -361,7 +363,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           ),
                         ),
 
-                        SizedBox(height: 24.0),
+                        SizedBox(height: 10.0),
                         Row(
                           children: [
                             Icon(Icons.home, color: Colors.grey,),
@@ -401,41 +403,36 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             )
                           ],
                         ),
-
-                        SizedBox(height: 20.0),
-                        GestureDetector(
-                          onTap: () async
-                          {
-                            var res = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
-
-                            if(res == "obtainDirection")
-                            {
-                              displayRideDetailsContainer();
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black54,
-                                  blurRadius: 6.0,
-                                  spreadRadius: 0.5,
-                                  offset: Offset(0.7, 0.7),
-                                ),
-                              ],
+                        DividerWidget(),
+                        SizedBox(height: 10.0),
+                        
+                        Builder(builder: (context){
+                          final GlobalKey<SlideActionState> _key = GlobalKey();
+                          return Padding(
+                            padding: EdgeInsets.all(1.0),
+                            child: SlideAction(
+                              innerColor: Colors.black,
+                              outerColor: Colors.white,
+                              child: Text("Explore Nearby"),
+                              sliderButtonIcon: Icon(Icons.local_dining_rounded, color: Colors.white,),
+                              borderRadius: 16.0,
+                              submittedIcon: Icon(Icons.done),
+                              animationDuration: Duration(milliseconds: 300),
+                              key: _key,
+                                onSubmit: () async
+                                {
+                                  var res = await Navigator.push(context, MaterialPageRoute(builder: (context) => ExploreScreen()));
+                                  Future.delayed(
+                                      Duration(milliseconds: 700),
+                                          () => _key.currentState.reset(),
+                                  );
+                                },
                             ),
 
-                            child: Row(
-                              children: [
-                                Icon(Icons.search, color: Colors.yellowAccent,),
-                                SizedBox(width: 10.0,),
-                                Text("Search Drop Off")
-                              ],
-                            ),
-                          ),
-                        ),
+                          );
+                        }),
+
+
 
                       ],
                     ),

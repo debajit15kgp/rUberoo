@@ -17,6 +17,31 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
+// if (snapshot.connectionState == ConnectionState.done) {
+// if (snapshot.hasData) {
+// // The user location returned from the snapshot
+// Position snapshotData = snapshot.data;
+// LatLng _target = LatLng(snapshotData.latitude, snapshotData.longitude);
+// child: Container(
+// height: MediaQuery.of(context).size.height,
+// width: MediaQuery.of(context).size.width,
+// child: GoogleMap(
+// mapType: MapType.normal,
+// initialCameraPosition:  CameraPosition(target: LatLng(40.712776, -74.005974), zoom: 12),
+// onMapCreated: (GoogleMapController controller) {
+// _controller.complete(controller);
+// newGoogleMapController = controller;
+// locatePosition();
+// },
+// markers: {
+// newyork1Marker,newyork2Marker,newyork3Marker,gramercyMarker,bernardinMarker,blueMarker
+// },
+//
+// ),
+// ),
+// While the connection is not in the done state yet
+// return Center(child: CircularProgressIndicator());
+
 class _SearchScreenState extends State<SearchScreen> {
 
   TextEditingController pickUpTextEditingController = TextEditingController();
