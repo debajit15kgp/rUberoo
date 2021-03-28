@@ -8,8 +8,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
+import 'package:google_maps_webservice/places.dart';
 import '../configMaps.dart';
+
+final places = GoogleMapsPlaces(apiKey: "AIzaSyBecGfD_fSFXtYk9E42GvOO3LAVDIV1ysk");
 
 class ExploreScreen extends StatefulWidget {
   @override
@@ -30,6 +32,28 @@ class HomePageState extends State<ExploreScreen> {
   void initState() {
     super.initState();
     _currentLocation = Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+  Future<void> _retrieveNearbyRestaurants(LatLng _userLocation) async {
+    PlacesSearchResponse _response = await places.searchNearbyWithRadius(
+        Location(lat: _userLocation.latitude,lng: _userLocation.longitude), 10000,
+        type: "restaurant");
+
+    Set<Marker> _restaurantMarkers = _response.results
+        .map((result) => Marker(
+        markerId: MarkerId(result.name),
+        // Use an icon with different colors to differentiate between current location
+        // and the restaurants
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+        infoWindow: InfoWindow(
+            title: result.name,
+            snippet: "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
+        position: LatLng(
+            result.geometry.location.lat, result.geometry.location.lng)))
+        .toSet();
+
+    setState(() {
+      _markers.addAll(_restaurantMarkers);
+    });
   }
   double zoomVal=5.0;
   @override
@@ -328,8 +352,10 @@ class HomePageState extends State<ExploreScreen> {
             if (snapshot.hasData) {
               // The user location returned from the snapshot
               Position snapshotData = snapshot.data;
-              LatLng _userLocation =
-              LatLng(snapshotData.latitude, snapshotData.longitude);
+              LatLng _userLocation = LatLng(snapshotData.latitude, snapshotData.longitude);
+              if (_markers.isEmpty) {
+                _retrieveNearbyRestaurants(_userLocation);
+              }
               return GoogleMap(
                   initialCameraPosition: CameraPosition(
                     target: _userLocation,
