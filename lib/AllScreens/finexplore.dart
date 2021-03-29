@@ -73,19 +73,19 @@ class HomePageState extends State<ExploreScreen> {
         infoWindow: InfoWindow(
             title: result.name,
             snippet: "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
-            position: LatLng(
+        position: LatLng(
             result.geometry.location.lat, result.geometry.location.lng)))
         .toSet();
     print(_response);
     List<Photo> emp = [];
     List<Place> _placeInfo = _response.results
         .map((result) => Place(
-          result.name,
-          result.placeId,
-          (result.photos) ?? emp,
-          result.geometry.location.lat,
-          result.geometry.location.lng,
-        )).toList();
+      result.name,
+      result.placeId,
+      (result.photos) ?? emp,
+      result.geometry.location.lat,
+      result.geometry.location.lng,
+    )).toList();
     allPlaces.addAll(_placeInfo);
     for(int i=0;i<allPlaces.length;i++)
     {
@@ -118,20 +118,20 @@ class HomePageState extends State<ExploreScreen> {
               Navigator.pop(context);
             }),
         title: TextField(
-            onChanged: (val)
-            {
-              findPlace(val);
-            },
-            controller: pickUpTextEditingController,
-            decoration: InputDecoration(
-              hintText: "Where to?",
-              fillColor: Colors.grey[400],
-              filled: true,
-              border: InputBorder.none,
-              isDense: true,
-              contentPadding: EdgeInsets.only(left: 11.0, top: 8.0, bottom: 8.0),
-            ),
-            //controller: pickUpTextEditingController
+          onChanged: (val)
+          {
+            findPlace(val);
+          },
+          controller: pickUpTextEditingController,
+          decoration: InputDecoration(
+            hintText: "Where to?",
+            fillColor: Colors.grey[400],
+            filled: true,
+            border: InputBorder.none,
+            isDense: true,
+            contentPadding: EdgeInsets.only(left: 11.0, top: 8.0, bottom: 8.0),
+          ),
+          //controller: pickUpTextEditingController
         ),
 
       ),
@@ -281,12 +281,12 @@ class HomePageState extends State<ExploreScreen> {
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
-                child: _boxes(
-                    //locationPhotoRef,
-                    "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
-                    40.738380, -73.988426,"name"),
+              child: _boxes(
+                //locationPhotoRef,
+                  "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
+                  40.738380, -73.988426,"name"),
 
-                  //allPlaces[0].geometry.location.lat, allPlaces[0].geometry.location.lng,allPlaces[0].name),
+              //allPlaces[0].geometry.location.lat, allPlaces[0].geometry.location.lng,allPlaces[0].name),
             ),
             SizedBox(width: 10.0),
             Padding(
@@ -380,20 +380,20 @@ class HomePageState extends State<ExploreScreen> {
                 _retrieveNearbyRestaurants(_userLocation);
               }
               return GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: _userLocation,
-                    zoom: 12,
-                  ),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                    newGoogleMapController = controller;
-                    locatePosition();
-                  },
-                  markers: _markers..add(Marker(
-                        markerId: MarkerId("User Location"),
-                        infoWindow: InfoWindow(title: "User Location"),
-                        position: _userLocation
-                  )),
+                initialCameraPosition: CameraPosition(
+                  target: _userLocation,
+                  zoom: 12,
+                ),
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                  newGoogleMapController = controller;
+                  locatePosition();
+                },
+                markers: _markers..add(Marker(
+                    markerId: MarkerId("User Location"),
+                    infoWindow: InfoWindow(title: "User Location"),
+                    position: _userLocation
+                )),
 
               );
 
@@ -407,108 +407,86 @@ class HomePageState extends State<ExploreScreen> {
 
   }
 
-  void onError(PlacesAutocompleteResponse response) {
-    homeScaffoldKey.currentState.showSnackBar(
-      SnackBar(content: Text(response.errorMessage)),
-    );
-  }
 
-
-  Future<void> _handlePressButton() async {
-    //try {
-      showDetailPlace(allPlaces[0].placeId);
-    // } catch (e) {
-    //   return;
-    // }
-  }
-
-  Future<Null> showDetailPlace(String placeId) async {
-    if (placeId != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PlaceDetailWidget(placeId)),
-      );
-    }
-  }
 
   // ignore: missing_return
-  // ListView buildPlacesList() {
-  //   final placesWidget = places.map((f) {
-  //     List<Widget> list = [
-  //       Padding(
-  //         padding: EdgeInsets.only(bottom: 4.0),
-  //         child: Text(
-  //           f.name,
-  //           style: Theme
-  //               .of(context)
-  //               .textTheme
-  //               .subtitle2,
-  //         ),
-  //       )
-  //     ];
-  //     if (f.formattedAddress != null) {
-  //       list.add(Padding(
-  //         padding: EdgeInsets.only(bottom: 2.0),
-  //         child: Text(
-  //           f.formattedAddress,
-  //           style: Theme
-  //               .of(context)
-  //               .textTheme
-  //               .subtitle2,
-  //         ),
-  //       ));
-  //     }
-  //
-  //     if (f.vicinity != null) {
-  //       list.add(Padding(
-  //         padding: EdgeInsets.only(bottom: 2.0),
-  //         child: Text(
-  //           f.vicinity,
-  //           style: Theme
-  //               .of(context)
-  //               .textTheme
-  //               .bodyText2,
-  //         ),
-  //       ));
-  //     }
-  //
-  //     if (f.types?.first != null) {
-  //       list.add(Padding(
-  //         padding: EdgeInsets.only(bottom: 2.0),
-  //         child: Text(
-  //           f.types.first,
-  //           style: Theme
-  //               .of(context)
-  //               .textTheme
-  //               .caption,
-  //         ),
-  //       ));
-  //     }
-  //
-  //     return Padding(
-  //       padding: EdgeInsets.only(top: 4.0, bottom: 4.0, left: 8.0, right: 8.0),
-  //       child: Card(
-  //         child: InkWell(
-  //           onTap: () {
-  //             showDetailPlace(f.placeId);
-  //           },
-  //           highlightColor: Colors.lightBlueAccent,
-  //           splashColor: Colors.red,
-  //           child: Padding(
-  //             padding: EdgeInsets.all(8.0),
-  //             child: Column(
-  //               mainAxisAlignment: MainAxisAlignment.start,
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: list,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   }).toList();
-  //
-  //   return ListView(shrinkWrap: true, children: placesWidget);
-  // }
+  ListView buildPlacesList() {
+    final placesWidget = places.map((f) {
+      List<Widget> list = [
+        Padding(
+          padding: EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            f.name,
+            style: Theme
+                .of(context)
+                .textTheme
+                .subtitle2,
+          ),
+        )
+      ];
+      if (f.formattedAddress != null) {
+        list.add(Padding(
+          padding: EdgeInsets.only(bottom: 2.0),
+          child: Text(
+            f.formattedAddress,
+            style: Theme
+                .of(context)
+                .textTheme
+                .subtitle2,
+          ),
+        ));
+      }
+
+      if (f.vicinity != null) {
+        list.add(Padding(
+          padding: EdgeInsets.only(bottom: 2.0),
+          child: Text(
+            f.vicinity,
+            style: Theme
+                .of(context)
+                .textTheme
+                .bodyText2,
+          ),
+        ));
+      }
+
+      if (f.types?.first != null) {
+        list.add(Padding(
+          padding: EdgeInsets.only(bottom: 2.0),
+          child: Text(
+            f.types.first,
+            style: Theme
+                .of(context)
+                .textTheme
+                .caption,
+          ),
+        ));
+      }
+
+      return Padding(
+        padding: EdgeInsets.only(top: 4.0, bottom: 4.0, left: 8.0, right: 8.0),
+        child: Card(
+          child: InkWell(
+            onTap: () {
+              showDetailPlace(f.placeId);
+            },
+            highlightColor: Colors.lightBlueAccent,
+            splashColor: Colors.red,
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: list,
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+
+    return ListView(shrinkWrap: true, children: placesWidget);
+  }
 
   Widget myDetailsContainer1(String restaurantName) {
     return Column(
