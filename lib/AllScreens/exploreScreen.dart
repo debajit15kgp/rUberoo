@@ -22,7 +22,18 @@ import 'package:location/location.dart' as LocationManager;
 final places =
     GoogleMapsPlaces(apiKey: "AIzaSyBecGfD_fSFXtYk9E42GvOO3LAVDIV1ysk");
 
+Set<Marker> markerSet;
+List<Place> newPlaces;
+Set<Polyline> polyLineSet;
+
 class ExploreScreen extends StatefulWidget {
+  ExploreScreen(Set<Marker> _markerSet, List<Place> _newPlaces,
+      Set<Polyline> _polyLineSet) {
+    markerSet = _markerSet;
+    newPlaces = _newPlaces;
+    polyLineSet = _polyLineSet;
+  }
+
   @override
   HomePageState createState() => HomePageState();
 }
@@ -41,6 +52,7 @@ class HomePageState extends State<ExploreScreen> {
   Future<Position> _currentLocation;
   Set<Marker> _markers = {};
   List<Place> allPlaces = [];
+
   Place emb = Place("Blue", "Abcd", <Photo>[], 0.0, 0.0);
   List<PlacesSearchResult> nearbyPlaces = [];
   double buttonHeight = 75.0;
@@ -114,6 +126,7 @@ class HomePageState extends State<ExploreScreen> {
   double zoomVal = 5.0;
   @override
   Widget build(BuildContext context) {
+
     allPlaces.add(emb);
     allPlaces.add(emb);
     allPlaces.add(emb);
@@ -154,6 +167,7 @@ class HomePageState extends State<ExploreScreen> {
         ),
       ),
       body: Stack(
+
         children: ini,
       ),
     );
@@ -305,6 +319,7 @@ class HomePageState extends State<ExploreScreen> {
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   //locationPhotoRef,
+
                   "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
                   40.738380,
                   -73.988426,
@@ -426,11 +441,8 @@ class HomePageState extends State<ExploreScreen> {
                   newGoogleMapController = controller;
                   locatePosition();
                 },
-                markers: _markers
-                  ..add(Marker(
-                      markerId: MarkerId("User Location"),
-                      infoWindow: InfoWindow(title: "User Location"),
-                      position: _userLocation)),
+                markers: markerSet,
+                polylines: polyLineSet,
               );
             } else {
               return Center(child: Text("Failed to get user location."));
