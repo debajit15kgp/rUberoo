@@ -851,7 +851,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
     Set<Marker> _restaurantMarkers = _response.results
         .map((result) => Marker(
-            markerId: MarkerId(result.name),
+            markerId: MarkerId(result.placeId),
             // Use an icon with different colors to differentiate between current location
             // and the restaurants
             icon: BitmapDescriptor.defaultMarkerWithHue(
