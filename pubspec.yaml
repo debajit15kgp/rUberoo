@@ -43,7 +43,7 @@ dependencies:
   flutter_google_places: ^0.2.8
   location: ^4.1.1
   google_maps_webservice: ^0.0.20-nullsafety.2
-
+  geodesy: ^0.3.2
 
 dev_dependencies:
   flutter_test:
