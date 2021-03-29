@@ -28,6 +28,9 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class HomePageState extends State<ExploreScreen> {
+  List<Widget> ini = [];
+  // ignore: non_constant_identifier_names
+  String name1 = "BOX8-MEALS", name2, name3, name4;
   TextEditingController pickUpTextEditingController = TextEditingController();
   TextEditingController dropOffTextEditingController = TextEditingController();
   final homeScaffoldKey = GlobalKey<ScaffoldState>();
@@ -38,6 +41,7 @@ class HomePageState extends State<ExploreScreen> {
   Future < Position > _currentLocation;
   Set < Marker > _markers = {};
   List < Place > allPlaces = [];
+  Place emb = Place("Blue","Abcd",<Photo>[],0.0,0.0);
   List<PlacesSearchResult> nearbyPlaces = [];
   double buttonHeight = 75.0;
   double containerHeight = 0;
@@ -48,8 +52,9 @@ class HomePageState extends State<ExploreScreen> {
       buttonHeight = 0;
       containerHeight = 150.0;
     });
-    _handlePressButton();
-    //_buildContainer();
+    //_handlePressButton();
+    _buildContainer();
+    //ini.add(_buildContainer());
   }
 
   @override
@@ -107,6 +112,18 @@ class HomePageState extends State<ExploreScreen> {
   double zoomVal=5.0;
   @override
   Widget build(BuildContext context) {
+    allPlaces.add(emb);
+    allPlaces.add(emb);
+    allPlaces.add(emb);
+    allPlaces.add(emb);
+    allPlaces.add(emb);
+    ini.addAll( <Widget>[
+        _buildGoogleMap(context),
+        _zoomMinusFunction(),
+        _zoomPlusFunction(),
+        _buildButton(),
+        _buildContainer(),
+      ] );
 
     String placeAddress = Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
     pickUpTextEditingController.text = placeAddress;
@@ -136,14 +153,7 @@ class HomePageState extends State<ExploreScreen> {
 
       ),
       body: Stack(
-        children: <Widget>[
-          _buildGoogleMap(context),
-          _zoomMinusFunction(),
-          _zoomPlusFunction(),
-          _buildButton(),
-          _buildContainer(),
-        ],
-
+        children: ini,
       ),
     );
   }
@@ -267,6 +277,7 @@ class HomePageState extends State<ExploreScreen> {
       print(allPlaces[i].name);
       print("=======================");
     }
+
     String locationPhotoRef;
     return Positioned(
       bottom: 0.0,
@@ -283,8 +294,8 @@ class HomePageState extends State<ExploreScreen> {
               padding: const EdgeInsets.all(8.0),
                 child: _boxes(
                     //locationPhotoRef,
-                    "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
-                    40.738380, -73.988426,"name"),
+                    "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
+                    40.738380, -73.988426, allPlaces[0].name),
 
                   //allPlaces[0].geometry.location.lat, allPlaces[0].geometry.location.lng,allPlaces[0].name),
             ),
@@ -293,28 +304,28 @@ class HomePageState extends State<ExploreScreen> {
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
-                  40.761421, -73.981667,"Le Bernardin"),
+                  40.761421, -73.981667, allPlaces[1].name),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128, -73.999619,"Blue Hill"),
+                  40.732128, -73.999619, allPlaces[2].name),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128, -73.999619,"Blue Hill"),
+                  40.732128, -73.999619, allPlaces[3].name),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128, -73.999619,"Blue Hill"),
+                  40.732128, -73.999619, allPlaces[4].name),
             ),
           ],
         ),
