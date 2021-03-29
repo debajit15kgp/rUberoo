@@ -113,7 +113,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   void displayRequestRideContainer() {
     setState(() {
-      requestRideContainerHeight = 250.0;
+      requestRideContainerHeight = 320.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingofMap = 230.0;
       drawerOpen = true;
@@ -146,7 +146,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
     setState(() {
       searchContainerHeight = 0.0;
-      rideDetailsContainerHeight = 240.0;
+      rideDetailsContainerHeight = 320.0;
       bottomPaddingofMap = 230.0;
       drawerOpen = false;
     });
@@ -458,8 +458,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             )
                           ],
                         ),
-                        DividerWidget(),
-                        SizedBox(height: 10.0),
                       ],
                     ),
                   ),
@@ -593,6 +591,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
+
+                    SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
                     Builder(builder: (context) {
                       final GlobalKey<SlideActionState> _key = GlobalKey();
                       return Padding(
@@ -615,6 +616,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 MaterialPageRoute(
                                     builder: (context) => ExploreScreen(
                                         markersSet2, newPlaces, polylineSet)));
+
                             Future.delayed(
                               Duration(milliseconds: 700),
                               () => _key.currentState.reset(),

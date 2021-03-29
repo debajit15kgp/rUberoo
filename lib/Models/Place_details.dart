@@ -8,10 +8,10 @@ class Place {
   double lng;
 
   Place(
-      this.name,
-      this.placeId,
-      this.photo,
-      this.lat,
-      this.lng,
-      );
+    this.name,
+    this.placeId,
+    this.photo,
+    this.lat,
+    this.lng,
+  );
 }
