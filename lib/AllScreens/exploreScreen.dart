@@ -19,10 +19,21 @@ import 'package:google_maps_webservice/places.dart';
 import '../configMaps.dart';
 import 'package:location/location.dart' as LocationManager;
 
+final places =
+    GoogleMapsPlaces(apiKey: "AIzaSyBecGfD_fSFXtYk9E42GvOO3LAVDIV1ysk");
 
-final places = GoogleMapsPlaces(apiKey: "AIzaSyBecGfD_fSFXtYk9E42GvOO3LAVDIV1ysk");
+Set<Marker> markerSet;
+List<Place> newPlaces;
+Set<Polyline> polyLineSet;
 
 class ExploreScreen extends StatefulWidget {
+  ExploreScreen(Set<Marker> _markerSet, List<Place> _newPlaces,
+      Set<Polyline> _polyLineSet) {
+    markerSet = _markerSet;
+    newPlaces = _newPlaces;
+    polyLineSet = _polyLineSet;
+  }
+
   @override
   HomePageState createState() => HomePageState();
 }
@@ -35,15 +46,14 @@ class HomePageState extends State<ExploreScreen> {
   List<PlacePredictions> placePredictionList = [];
   Position currentPosition;
   Completer<GoogleMapController> _controller = Completer();
-  Future < Position > _currentLocation;
-  Set < Marker > _markers = {};
-  List < Place > allPlaces = [];
+  Future<Position> _currentLocation;
+  Set<Marker> _markers = {};
+  List<Place> allPlaces = [];
   List<PlacesSearchResult> nearbyPlaces = [];
   double buttonHeight = 75.0;
   double containerHeight = 0;
 
-  void displayRequestRideContainer()
-  {
+  void displayRequestRideContainer() {
     setState(() {
       buttonHeight = 0;
       containerHeight = 150.0;
@@ -55,40 +65,43 @@ class HomePageState extends State<ExploreScreen> {
   @override
   void initState() {
     super.initState();
-    _currentLocation = Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _currentLocation =
+        Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
+
   Future<void> _retrieveNearbyRestaurants(LatLng _userLocation) async {
     PlacesSearchResponse _response = await places.searchNearbyWithRadius(
-        Location(lat: _userLocation.latitude,lng: _userLocation.longitude), 1000,
+        Location(lat: _userLocation.latitude, lng: _userLocation.longitude),
+        1000,
         type: "restaurant");
-
-
 
     Set<Marker> _restaurantMarkers = _response.results
         .map((result) => Marker(
-        markerId: MarkerId(result.name),
-        // Use an icon with different colors to differentiate between current location
-        // and the restaurants
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-        infoWindow: InfoWindow(
-            title: result.name,
-            snippet: "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
+            markerId: MarkerId(result.name),
+            // Use an icon with different colors to differentiate between current location
+            // and the restaurants
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueAzure),
+            infoWindow: InfoWindow(
+                title: result.name,
+                snippet:
+                    "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
             position: LatLng(
-            result.geometry.location.lat, result.geometry.location.lng)))
+                result.geometry.location.lat, result.geometry.location.lng)))
         .toSet();
     print(_response);
     List<Photo> emp = [];
     List<Place> _placeInfo = _response.results
         .map((result) => Place(
-          result.name,
-          result.placeId,
-          (result.photos) ?? emp,
-          result.geometry.location.lat,
-          result.geometry.location.lng,
-        )).toList();
+              result.name,
+              result.placeId,
+              (result.photos) ?? emp,
+              result.geometry.location.lat,
+              result.geometry.location.lng,
+            ))
+        .toList();
     allPlaces.addAll(_placeInfo);
-    for(int i=0;i<allPlaces.length;i++)
-    {
+    for (int i = 0; i < allPlaces.length; i++) {
       print("----------------------------");
       print(allPlaces[i].placeId);
       print(allPlaces[i].photo);
@@ -104,11 +117,11 @@ class HomePageState extends State<ExploreScreen> {
     });
   }
 
-  double zoomVal=5.0;
+  double zoomVal = 5.0;
   @override
   Widget build(BuildContext context) {
-
-    String placeAddress = Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
+    String placeAddress =
+        Provider.of<AppData>(context).pickUpLocation.placeName ?? "";
     pickUpTextEditingController.text = placeAddress;
     return Scaffold(
       appBar: AppBar(
@@ -118,22 +131,20 @@ class HomePageState extends State<ExploreScreen> {
               Navigator.pop(context);
             }),
         title: TextField(
-            onChanged: (val)
-            {
-              findPlace(val);
-            },
-            controller: pickUpTextEditingController,
-            decoration: InputDecoration(
-              hintText: "Where to?",
-              fillColor: Colors.grey[400],
-              filled: true,
-              border: InputBorder.none,
-              isDense: true,
-              contentPadding: EdgeInsets.only(left: 11.0, top: 8.0, bottom: 8.0),
-            ),
-            //controller: pickUpTextEditingController
+          onChanged: (val) {
+            findPlace(val);
+          },
+          controller: pickUpTextEditingController,
+          decoration: InputDecoration(
+            hintText: "Where to?",
+            fillColor: Colors.grey[400],
+            filled: true,
+            border: InputBorder.none,
+            isDense: true,
+            contentPadding: EdgeInsets.only(left: 11.0, top: 8.0, bottom: 8.0),
+          ),
+          //controller: pickUpTextEditingController
         ),
-
       ),
       body: Stack(
         children: <Widget>[
@@ -143,41 +154,42 @@ class HomePageState extends State<ExploreScreen> {
           _buildButton(),
           _buildContainer(),
         ],
-
       ),
     );
   }
-  void locatePosition() async
-  {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+  void locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
 
     LatLng latLatPosition = LatLng(position.latitude, position.longitude);
 
-    CameraPosition cameraPosition = new CameraPosition(target: latLatPosition, zoom: 14);
-    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    CameraPosition cameraPosition =
+        new CameraPosition(target: latLatPosition, zoom: 14);
+    newGoogleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    String address = await AssistantMethods.searchCoordinatesAddress(position, context);
-    print("This is your address :: "+address);
+    String address =
+        await AssistantMethods.searchCoordinatesAddress(position, context);
+    print("This is your address :: " + address);
   }
 
-  void findPlace(String placeName) async
-  {
-    if(placeName.length > 1)
-    {
+  void findPlace(String placeName) async {
+    if (placeName.length > 1) {
+      String autoCompleteUrl =
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:in";
 
-      String autoCompleteUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:in";
-
-      var res  = await RequestAssistant.getRequest(autoCompleteUrl);
-      if(res == "Failed")
-      {
+      var res = await RequestAssistant.getRequest(autoCompleteUrl);
+      if (res == "Failed") {
         return;
       }
 
-      if(res["status"] == "OK")
-      {
+      if (res["status"] == "OK") {
         var predictions = res["predictions"];
-        var placesList = (predictions as List).map((e) => PlacePredictions.fromJson(e)).toList();
+        var placesList = (predictions as List)
+            .map((e) => PlacePredictions.fromJson(e))
+            .toList();
         setState(() {
           placePredictionList = placesList;
         });
@@ -186,23 +198,22 @@ class HomePageState extends State<ExploreScreen> {
   }
 
   Widget _zoomMinusFunction() {
-
     return Align(
       alignment: Alignment.topLeft,
       child: IconButton(
-          icon: Icon(FontAwesomeIcons.searchMinus,color:Color(0xff6200ee)),
+          icon: Icon(FontAwesomeIcons.searchMinus, color: Color(0xff6200ee)),
           onPressed: () {
             zoomVal--;
-            _minus( zoomVal);
+            _minus(zoomVal);
           }),
     );
   }
-  Widget _zoomPlusFunction() {
 
+  Widget _zoomPlusFunction() {
     return Align(
       alignment: Alignment.topRight,
       child: IconButton(
-          icon: Icon(FontAwesomeIcons.searchPlus,color:Color(0xff6200ee)),
+          icon: Icon(FontAwesomeIcons.searchPlus, color: Color(0xff6200ee)),
           onPressed: () {
             zoomVal++;
             _plus(zoomVal);
@@ -221,22 +232,31 @@ class HomePageState extends State<ExploreScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).accentColor),
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).accentColor),
             ),
-            onPressed: ()
-            {
+            onPressed: () {
               //await _buildGoogleMap(context);
               displayRequestRideContainer();
               //_buildContainer();
-
             },
             child: Padding(
               padding: EdgeInsets.all(17.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Request", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),),
-                  Icon(FontAwesomeIcons.delicious, color: Colors.white, size: 26.0,)
+                  Text(
+                    "Request",
+                    style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  Icon(
+                    FontAwesomeIcons.delicious,
+                    color: Colors.white,
+                    size: 26.0,
+                  )
                 ],
               ),
             ),
@@ -246,24 +266,24 @@ class HomePageState extends State<ExploreScreen> {
     );
   }
 
-
   Future<void> _minus(double zoomVal) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
   }
+
   Future<void> _plus(double zoomVal) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(40.712776, -74.005974), zoom: zoomVal)));
   }
 
   String buildPhotoURL(String photoReference) {
     return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$mapKey";
   }
 
-
   Widget _buildContainer() {
-    for(int i=0;i<min(5,allPlaces.length);i++)
-    {
+    for (int i = 0; i < min(5, allPlaces.length); i++) {
       print(allPlaces[i].name);
       print("=======================");
     }
@@ -281,57 +301,73 @@ class HomePageState extends State<ExploreScreen> {
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
-                child: _boxes(
-                    //locationPhotoRef,
-                    "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
-                    40.738380, -73.988426,"name"),
+              child: _boxes(
+                  //locationPhotoRef,
+                  "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
+                  40.738380,
+                  -73.988426,
+                  "name"),
 
-                  //allPlaces[0].geometry.location.lat, allPlaces[0].geometry.location.lng,allPlaces[0].name),
+              //allPlaces[0].geometry.location.lat, allPlaces[0].geometry.location.lng,allPlaces[0].name),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
-                  40.761421, -73.981667,"Le Bernardin"),
+                  40.761421,
+                  -73.981667,
+                  "Le Bernardin"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128, -73.999619,"Blue Hill"),
+                  40.732128,
+                  -73.999619,
+                  "Blue Hill"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128, -73.999619,"Blue Hill"),
+                  40.732128,
+                  -73.999619,
+                  "Blue Hill"),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128, -73.999619,"Blue Hill"),
+                  40.732128,
+                  -73.999619,
+                  "Blue Hill"),
             ),
           ],
         ),
       ),
     );
   }
-  Future<void> _gotoLocation(double lat,double long) async {
+
+  Future<void> _gotoLocation(double lat, double long) async {
     final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(lat, long), zoom: 15,tilt: 50.0,
-      bearing: 45.0,)));
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: LatLng(lat, long),
+      zoom: 15,
+      tilt: 50.0,
+      bearing: 45.0,
+    )));
   }
-  Widget _boxes(String _image, double lat,double long,String restaurantName) {
-    return  GestureDetector(
+
+  Widget _boxes(String _image, double lat, double long, String restaurantName) {
+    return GestureDetector(
       onTap: () {
-        _gotoLocation(lat,long);
+        _gotoLocation(lat, long);
       },
-      child:Container(
+      child: Container(
         child: new FittedBox(
           child: Material(
               color: Colors.white,
@@ -350,22 +386,20 @@ class HomePageState extends State<ExploreScreen> {
                         fit: BoxFit.fill,
                         image: NetworkImage(_image),
                       ),
-                    ),),
+                    ),
+                  ),
                   Container(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: myDetailsContainer1(restaurantName),
                     ),
                   ),
-
-                ],)
-          ),
+                ],
+              )),
         ),
       ),
     );
   }
-
-
 
   Widget _buildGoogleMap(BuildContext context) {
     return FutureBuilder(
@@ -375,28 +409,24 @@ class HomePageState extends State<ExploreScreen> {
             if (snapshot.hasData) {
               // The user location returned from the snapshot
               Position snapshotData = snapshot.data;
-              LatLng _userLocation = LatLng(snapshotData.latitude, snapshotData.longitude);
+              LatLng _userLocation =
+                  LatLng(snapshotData.latitude, snapshotData.longitude);
               if (_markers.isEmpty) {
                 _retrieveNearbyRestaurants(_userLocation);
               }
               return GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: _userLocation,
-                    zoom: 12,
-                  ),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                    newGoogleMapController = controller;
-                    locatePosition();
-                  },
-                  markers: _markers..add(Marker(
-                        markerId: MarkerId("User Location"),
-                        infoWindow: InfoWindow(title: "User Location"),
-                        position: _userLocation
-                  )),
-
+                initialCameraPosition: CameraPosition(
+                  target: _userLocation,
+                  zoom: 12,
+                ),
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                  newGoogleMapController = controller;
+                  locatePosition();
+                },
+                markers: markerSet,
+                polylines: polyLineSet,
               );
-
             } else {
               return Center(child: Text("Failed to get user location."));
             }
@@ -404,7 +434,6 @@ class HomePageState extends State<ExploreScreen> {
           // While the connection is not in the done state yet
           return Center(child: CircularProgressIndicator());
         });
-
   }
 
   void onError(PlacesAutocompleteResponse response) {
@@ -413,10 +442,9 @@ class HomePageState extends State<ExploreScreen> {
     );
   }
 
-
   Future<void> _handlePressButton() async {
     //try {
-      showDetailPlace(allPlaces[0].placeId);
+    showDetailPlace(allPlaces[0].placeId);
     // } catch (e) {
     //   return;
     // }
@@ -517,91 +545,91 @@ class HomePageState extends State<ExploreScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Container(
-              child: Text(restaurantName,
-                style: TextStyle(
-                    color: Color(0xff6200ee),
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold),
-              )),
+              child: Text(
+            restaurantName,
+            style: TextStyle(
+                color: Color(0xff6200ee),
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold),
+          )),
         ),
-        SizedBox(height:5.0),
+        SizedBox(height: 5.0),
         Container(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                    child: Text(
-                      "4.1",
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18.0,
-                      ),
-                    )),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStar,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    FontAwesomeIcons.solidStarHalf,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                    child: Text(
-                      "(946)",
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18.0,
-                      ),
-                    )),
-              ],
-            )),
-        SizedBox(height:5.0),
-        Container(
-            child: Text(
-              "American \u00B7 \u0024\u0024 \u00B7 1.6 mi",
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Container(
+                child: Text(
+              "4.1",
               style: TextStyle(
                 color: Colors.black54,
                 fontSize: 18.0,
               ),
             )),
-        SizedBox(height:5.0),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStar,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+              child: Icon(
+                FontAwesomeIcons.solidStarHalf,
+                color: Colors.amber,
+                size: 15.0,
+              ),
+            ),
+            Container(
+                child: Text(
+              "(946)",
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 18.0,
+              ),
+            )),
+          ],
+        )),
+        SizedBox(height: 5.0),
         Container(
             child: Text(
-              "Closed \u00B7 Opens 17:00 Thu",
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold),
-            )),
+          "American \u00B7 \u0024\u0024 \u00B7 1.6 mi",
+          style: TextStyle(
+            color: Colors.black54,
+            fontSize: 18.0,
+          ),
+        )),
+        SizedBox(height: 5.0),
+        Container(
+            child: Text(
+          "Closed \u00B7 Opens 17:00 Thu",
+          style: TextStyle(
+              color: Colors.black54,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold),
+        )),
       ],
     );
   }
 }
-

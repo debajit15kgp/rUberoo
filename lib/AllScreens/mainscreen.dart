@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_myuber/Models/Place_details.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,6 +56,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   double bottomPaddingofMap = 0;
 
   Set<Marker> markersSet = {};
+  Set<Marker> markersSet2 = {};
+  List<Place> newPlaces = [];
   Set<Marker> _shops = {};
   Set<Circle> circlesSet = {};
 
@@ -129,6 +132,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
       polylineSet.clear();
       markersSet.clear();
+      markersSet2.clear();
+      newPlaces.clear();
       circlesSet.clear();
       pLineCoordinates.clear();
     });
@@ -455,35 +460,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                         DividerWidget(),
                         SizedBox(height: 10.0),
-                        Builder(builder: (context) {
-                          final GlobalKey<SlideActionState> _key = GlobalKey();
-                          return Padding(
-                            padding: EdgeInsets.all(1.0),
-                            child: SlideAction(
-                              innerColor: Colors.black,
-                              outerColor: Colors.white,
-                              child: Text("Explore Nearby"),
-                              sliderButtonIcon: Icon(
-                                Icons.local_dining_rounded,
-                                color: Colors.white,
-                              ),
-                              borderRadius: 16.0,
-                              submittedIcon: Icon(Icons.done),
-                              animationDuration: Duration(milliseconds: 300),
-                              key: _key,
-                              onSubmit: () async {
-                                var res = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ExploreScreen()));
-                                Future.delayed(
-                                  Duration(milliseconds: 700),
-                                  () => _key.currentState.reset(),
-                                );
-                              },
-                            ),
-                          );
-                        }),
                       ],
                     ),
                   ),
@@ -616,7 +592,37 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                    )
+                    ),
+                    Builder(builder: (context) {
+                      final GlobalKey<SlideActionState> _key = GlobalKey();
+                      return Padding(
+                        padding: EdgeInsets.all(1.0),
+                        child: SlideAction(
+                          innerColor: Colors.black,
+                          outerColor: Colors.white,
+                          child: Text("Explore Nearby"),
+                          sliderButtonIcon: Icon(
+                            Icons.local_dining_rounded,
+                            color: Colors.white,
+                          ),
+                          borderRadius: 16.0,
+                          submittedIcon: Icon(Icons.done),
+                          animationDuration: Duration(milliseconds: 300),
+                          key: _key,
+                          onSubmit: () async {
+                            var res = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ExploreScreen(
+                                        markersSet2, newPlaces, polylineSet)));
+                            Future.delayed(
+                              Duration(milliseconds: 700),
+                              () => _key.currentState.reset(),
+                            );
+                          },
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -811,7 +817,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
     setState(() {
       markersSet.add(pickUpLocMarker);
+      markersSet2.add(pickUpLocMarker);
       markersSet.add(dropOffLocMarker);
+      markersSet2.add(dropOffLocMarker);
       // for (var it in _shops) {
       //   markersSet.add(it);
       // }
@@ -846,26 +854,48 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   Future<void> _retrieveNearbyRestaurants(LatLng _userLocation) async {
     PlacesSearchResponse _response = await places.searchNearbyWithRadius(
-        Location(lat: _userLocation.latitude, lng: _userLocation.longitude), 75,
-        type: "restaurant", keyword: "kolkata");
+        Location(lat: _userLocation.latitude, lng: _userLocation.longitude),
+        100,
+        type: "restaurant");
 
-    Set<Marker> _restaurantMarkers = _response.results
-        .map((result) => Marker(
-            markerId: MarkerId(result.placeId),
-            // Use an icon with different colors to differentiate between current location
-            // and the restaurants
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueAzure),
-            infoWindow: InfoWindow(
-                title: result.name,
-                snippet:
-                    "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
-            position: LatLng(
-                result.geometry.location.lat, result.geometry.location.lng)))
-        .toSet();
+    // Set<Marker> _restaurantMarkers = _response.results
+    //     .map((result) => Marker(
+    //         markerId: MarkerId(result.placeId),
+    //         // Use an icon with different colors to differentiate between current location
+    //         // and the restaurants
+    //         icon: BitmapDescriptor.defaultMarkerWithHue(
+    //             BitmapDescriptor.hueAzure),
+    //         infoWindow: InfoWindow(
+    //             title: result.name,
+    //             snippet:
+    //                 "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
+    //         position: LatLng(
+    //             result.geometry.location.lat, result.geometry.location.lng)))
+    //     .toSet();
 
+    var result = _response.results[0];
+
+    Marker mark = Marker(
+        markerId: MarkerId(result.placeId),
+        // Use an icon with different colors to differentiate between current location
+        // and the restaurants
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+        infoWindow: InfoWindow(
+            title: result.name,
+            snippet: "Ratings: " + (result.rating?.toString() ?? "Not Rated")),
+        position:
+            LatLng(result.geometry.location.lat, result.geometry.location.lng));
+
+    List<Photo> emp = [];
     setState(() {
-      markersSet.addAll(_restaurantMarkers);
+      markersSet2.add(mark);
+      newPlaces.add(Place(
+        result.name,
+        result.placeId,
+        (result.photos) ?? emp,
+        result.geometry.location.lat,
+        result.geometry.location.lng,
+      ));
     });
   }
 
