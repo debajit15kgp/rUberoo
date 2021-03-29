@@ -453,7 +453,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             )
                           ],
                         ),
-
                       ],
                     ),
                   ),
@@ -583,9 +582,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                 size: 26.0,
                               )
                             ],
-
                           ),
-
                         ),
                       ),
                     ),
@@ -614,7 +611,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                     builder: (context) => ExploreScreen()));
                             Future.delayed(
                               Duration(milliseconds: 700),
-                                  () => _key.currentState.reset(),
+                              () => _key.currentState.reset(),
                             );
                           },
                         ),
