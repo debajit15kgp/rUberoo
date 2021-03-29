@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -51,9 +52,9 @@ class HomePageState extends State<ExploreScreen> {
   Completer<GoogleMapController> _controller = Completer();
   Future<Position> _currentLocation;
   Set<Marker> _markers = {};
-  List<Place> allPlaces = [];
+  Queue<Place> allPlaces = new Queue();
 
-  Place emb = Place("Blue", "Abcd", <Photo>[], 0.0, 0.0);
+  Place emb = Place("Blue Tavern", "Abcd", <Photo>[], 0.0, 0.0);
   List<PlacesSearchResult> nearbyPlaces = [];
   double buttonHeight = 75.0;
   double containerHeight = 0;
@@ -106,12 +107,17 @@ class HomePageState extends State<ExploreScreen> {
               result.geometry.location.lng,
             ))
         .toList();
-    allPlaces.addAll(_placeInfo);
-    for (int i = 0; i < allPlaces.length; i++) {
+
+    for (int i = 0; i < _placeInfo.length; i++) {
+      allPlaces.addFirst(_placeInfo[i]);
+      if(allPlaces.length>5) {
+        allPlaces.removeLast();
+      }
       print("----------------------------");
-      print(allPlaces[i].placeId);
-      print(allPlaces[i].photo);
-      print(allPlaces[i].name);
+      print(_placeInfo[i].name);
+      // print(allPlaces[i].placeId);
+      // print(allPlaces[i].photo);
+      // print(allPlaces[i].name);
       print("****************************");
     }
 
@@ -298,11 +304,15 @@ class HomePageState extends State<ExploreScreen> {
   }
 
   Widget _buildContainer() {
+    // for (int i = 0; i < min(5, allPlaces.length); i++) {
+    //   print(allPlaces[i].name);
+    //   print("=======================");
+    // }
+    List<Place> _nowPlace = allPlaces.toList();
     for (int i = 0; i < min(5, allPlaces.length); i++) {
-      print(allPlaces[i].name);
+      print(_nowPlace[i].name);
       print("=======================");
     }
-
     String locationPhotoRef;
     return Positioned(
       bottom: 0.0,
@@ -319,11 +329,11 @@ class HomePageState extends State<ExploreScreen> {
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   //locationPhotoRef,
-
-                  "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
-                  40.738380,
-                  -73.988426,
-                  allPlaces[0].name),
+                  buildPhotoURL(_nowPlace[0].photo[0].photoReference),
+                  //"https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
+                  _nowPlace[0].lat,
+                  _nowPlace[0].lng,
+                  _nowPlace[0].name),
 
               //allPlaces[0].geometry.location.lat, allPlaces[0].geometry.location.lng,allPlaces[0].name),
             ),
@@ -331,37 +341,41 @@ class HomePageState extends State<ExploreScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
-                  40.761421,
-                  -73.981667,
-                  allPlaces[1].name),
+                  buildPhotoURL(_nowPlace[1].photo[0].photoReference),
+                  //"https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
+                  _nowPlace[1].lat,
+                  _nowPlace[1].lng,
+                  _nowPlace[1].name),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128,
-                  -73.999619,
-                  allPlaces[2].name),
+                  buildPhotoURL(_nowPlace[2].photo[0].photoReference),
+                  //"https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+                  _nowPlace[2].lat,
+                  _nowPlace[2].lng,
+                  _nowPlace[2].name),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128,
-                  -73.999619,
-                  allPlaces[3].name),
+                  buildPhotoURL(_nowPlace[3].photo[0].photoReference),
+                  //"https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+                  _nowPlace[3].lat,
+                  _nowPlace[3].lng,
+                  _nowPlace[3].name),
             ),
             SizedBox(width: 10.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
-                  "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128,
-                  -73.999619,
-                  allPlaces[4].name),
+                  buildPhotoURL(_nowPlace[4].photo[0].photoReference),
+                  //"https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+                  _nowPlace[4].lat,
+                  _nowPlace[4].lng,
+                  _nowPlace[4].name),
             ),
           ],
         ),
@@ -459,22 +473,7 @@ class HomePageState extends State<ExploreScreen> {
     );
   }
 
-  Future<void> _handlePressButton() async {
-    //try {
-    showDetailPlace(allPlaces[0].placeId);
-    // } catch (e) {
-    //   return;
-    // }
-  }
 
-  Future<Null> showDetailPlace(String placeId) async {
-    if (placeId != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PlaceDetailWidget(placeId)),
-      );
-    }
-  }
 
   // ignore: missing_return
   // ListView buildPlacesList() {

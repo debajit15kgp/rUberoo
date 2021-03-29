@@ -730,10 +730,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   Future<void> getPlaceDirections() async {
     var initialPos =
         Provider.of<AppData>(context, listen: false).pickUpLocation;
-    var initialPos2 = LatLng(22.5985633, 88.3662865);
+
+    //var initialPos2 = LatLng(22.5985633, 88.3662865);
     var finalPos = Provider.of<AppData>(context, listen: false).dropOffLocation;
 
-    var pickUpLatLng = LatLng(initialPos2.latitude, initialPos2.longitude);
+    var pickUpLatLng = LatLng(initialPos.latitude, initialPos.longitude);
     var dropOffLatLng = LatLng(finalPos.latitude, finalPos.longitude);
 
     showDialog(
