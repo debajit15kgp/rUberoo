@@ -1,5 +1,5 @@
 # flutter_myuber
-![Hi, We are Team rUberoo. 👋 We are from IIT Kharagpur 🚀  🚀 This is our repository for Uber HackTag 2021 ❤️](https://github.com/debajit15kgp/rUberoo/tree/test/images/Intro.gif)
+![Hi, We are Team rUberoo. 👋 We are from IIT Kharagpur 🚀  🚀 This is our repository for Uber HackTag 2021 ❤️](https://github.com/debajit15kgp/rUberoo/blob/test/images/Intro.gif)
 This Repository containes the code and resources to reproduce the work of Team ```rUberoo``` for UberHacktag Grand Finale 2021. 
 
 ## Getting Started
@@ -18,13 +18,7 @@ samples, guidance on mobile development, and a full API reference.
 
 ## O
 
-Apart from the dataset supplied by the organizers of the shared task, we also used a monolingual English Offensive Language Identification Dataset ([OLID](https://arxiv.org/pdf/1902.09666.pdf)) used in the SemEval-2019 Task 6 (OffensEval). The dataset contains the same labels as our task datasets with the exception of the ```not in intended language``` label. The one-to-one mapping between the labels in OLID and it's large size of 14k tweets makes it suitable for aiding the transfer learning.
 
-## Transformer Architecture
-
-The Transformer Architecture used by us is shown in the figure. We used the pre-trained models realeased by [HuggingFace](https://huggingface.co/transformers/pretrained_models.html).
-
-![Transformer Architecture](https://github.com/kushal2000/Dravidian-Offensive-Language-Identification/blob/master/Transformer_Architecture.jpg)
 
 
 
