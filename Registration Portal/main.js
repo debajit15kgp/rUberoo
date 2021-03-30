@@ -40,6 +40,7 @@ function submitForm(e)
     // console.log(plan);
 
     saveMsg(placename, cityLat, cityLng, placeid, pincode, state, namebusiness, nameowner, description, plan);
+    window.location.href="thank.html";
 }
 
 function getInputVal(id)
