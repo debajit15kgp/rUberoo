@@ -1,6 +1,6 @@
 # flutter_myuber
-
-Taxi Booking App
+![Hi, We are Team rUberoo. 👋 We are from IIT Kharagpur 🚀  🚀 This is our repository for Uber HackTag 2021 ❤️](https://github.com/debajit15kgp/rUberoo/blob/test/images/Intro.gif)
+This Repository containes the code and resources to reproduce the work of Team ```rUberoo``` for UberHacktag Grand Finale 2021. 
 
 ## Getting Started
 
@@ -14,3 +14,12 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+## O
+
+
+
+
+
+
