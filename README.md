@@ -1,7 +1,7 @@
 # flutter_myuber
 ![Hi, We are Team rUberoo. 👋 We are from IIT Kharagpur 🚀  🚀 This is our repository for Uber HackTag 2021 ❤️](https://github.com/debajit15kgp/rUberoo/blob/test/images/Intro.gif)
 This Repository containes the code and resources to reproduce the work of Team ```rUberoo``` for UberHacktag Grand Finale 2021. 
-
+Link to Business registration portal: https://susmita2000.github.io/registration_portal/
 ## Getting Started
 
 This project is a starting point for a Flutter application.
