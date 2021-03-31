@@ -1,6 +1,52 @@
 # flutter_myuber
-![Hi, We are Team rUberoo. 👋 We are from IIT Kharagpur 🚀  🚀 This is our repository for Uber HackTag 2021 ❤️](https://github.com/debajit15kgp/rUberoo/blob/test/images/Intro.gif)
-This Repository containes the code and resources to reproduce the work of Team ```rUberoo``` for UberHacktag Grand Finale 2021. 
+![Hi, We are Team rUberoo. 👋 We are from IIT Kharagpur 🚀  🚀 This is our repository for Uber HackTag 2021 ❤️](images/Intro.gif)
+This Repository containes the code and resources to reproduce the work of Team ```rUberoo``` for UberHacktag Grand Finale 2021. We present to you Uber Explorer, which enables riders to search nearby attractions and pickup their favourite items.
+
+## Demoable Prototype of our Application
+
+<p align="center">
+  <img src="images/demo.gif" alt="animated" />
+</p>
+
+
+## File Structure
+
+Ensure the following directory structure:
+
+```bash
+├── android/
+├── fonts/
+├── images/
+├── ios/ 
+├── libs/
+    ├── AllScreens/
+        ├── exploreScreen.dart
+        ├── loginScreen.dart
+        ├── mainscreen.dart
+        ├── place_detail.dart
+        ├── registrationScreen.dart 
+        ├── searchScreen.dart
+    ├── AllWidgets/
+        ├── Divider.dart
+        ├── progressDialog.dart
+    ├── Assistants/
+        ├── assistantMethods.dart
+        ├── requestAssistant.dart
+    ├── DataHandler/
+        ├── appData.dart
+    ├── Models/
+        ├── Place_details.dart
+        ├── address.dart
+        ├── allUsers.dart
+        ├── directDetails.dart
+        ├── placePredictions.dart
+    ├── configMaps.dart
+    ├── main.dart       
+├── sounds/
+├── test/   
+├── README.md
+└── pubspec.yaml
+```
 
 ## Getting Started
 
@@ -14,12 +60,5 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-
-
-## O
-
-
-
-
 
 
