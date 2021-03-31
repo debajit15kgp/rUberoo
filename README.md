@@ -5,7 +5,9 @@ This Repository containes the code and resources to reproduce the work of Team `
 ## Demoable Prototype of our Application
 
 <p align="center">
-  <img src="images/demo.gif" alt="animated" />
+  <img src="images/demo_1.gif" alt="animated" />
+  <img src="images/demo_2.gif" alt="animated" />
+  <img src="images/demo_3.gif" alt="animated" />
 </p>
 
 
