@@ -54,7 +54,9 @@ class HomePageState extends State<ExploreScreen> {
   Set<Marker> _markers = {};
   Queue<Place> allPlaces = new Queue();
 
-  Place emb = Place("Blue Tavern", "Abcd", <Photo>[], 0.0, 0.0);
+  List<Photo> ph = <Photo>[];
+  Photo _newPhoto = Photo(photoReference: "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60");
+
   List<PlacesSearchResult> nearbyPlaces = [];
   double buttonHeight = 75.0;
   double containerHeight = 0;
@@ -132,7 +134,10 @@ class HomePageState extends State<ExploreScreen> {
   double zoomVal = 5.0;
   @override
   Widget build(BuildContext context) {
-
+    ph.add(_newPhoto);
+    Place emb = Place("Blue Tavern", "Abcd", ph, 0.0, 0.0);
+    allPlaces.add(emb);
+    allPlaces.add(emb);
     allPlaces.add(emb);
     allPlaces.add(emb);
     allPlaces.add(emb);
@@ -154,7 +159,7 @@ class HomePageState extends State<ExploreScreen> {
         leading: IconButton(
             icon: Icon(FontAwesomeIcons.arrowLeft),
             onPressed: () {
-              Navigator.pop(context);
+                Navigator.pop(context);
             }),
         title: TextField(
           onChanged: (val) {
@@ -630,7 +635,7 @@ class HomePageState extends State<ExploreScreen> {
         SizedBox(height: 5.0),
         Container(
             child: Text(
-          "American \u00B7 \u0024\u0024 \u00B7 1.6 mi",
+          "Continental \u00B7 \u0024\u0024 \u00B7 1.6 mi",
           style: TextStyle(
             color: Colors.black54,
             fontSize: 18.0,
